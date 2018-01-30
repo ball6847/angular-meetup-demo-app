@@ -1,6 +1,6 @@
 pipeline:
   # start cache
-  restore:
+  cache-restore:
     image: drillster/drone-volume-cache
     restore: true
     mount:
@@ -15,7 +15,7 @@ pipeline:
       - yarn install --cache-folder ./.cache
 
   # save cache
-  rebuild:
+  cache-rebuild:
     image: drillster/drone-volume-cache
     rebuild: true
     mount:
