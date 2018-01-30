@@ -45,7 +45,7 @@ pipeline:
 
   deploy:
     image: trion/ng-cli-karma:1.6.6
-    secrets: [ SEMAPHORE_TOKEN ]
+    secrets: [ SEMAPHORE_URL, SEMAPHORE_USERNAME, SEMAPHORE_PASSWORD ]
     commands:
       - ./deploy.sh
     when:
