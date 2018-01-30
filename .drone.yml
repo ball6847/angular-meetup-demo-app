@@ -39,7 +39,7 @@ pipeline:
     secrets: [ docker_username, docker_password ]
     repo: ball6847/angular-meetup-demo-app
     registry: 159.65.10.143:5000
-    tags: [ ${DRONE_COMMIT_SHA}, latest ]
+    tags: [ $DRONE_COMMIT_SHA, latest ]
     when:
       branch: master
 
