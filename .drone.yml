@@ -36,9 +36,19 @@ pipeline:
     secrets: [ DOCKER_USERNAME, DOCKER_PASSWORD ]
     repo: 159.65.10.143:5000/ball6847/angular-meetup-demo-app
     registry: 159.65.10.143:5000
-    auto_tag: true
+    tags: [ ${DRONE_COMMIT_SHA}, latest ]
     insecure: true
     when:
       branch: master
 
-
+  deploy:
+    image: trion/ng-cli-karma:1.6.6
+    secrets: [ SEMAPHORE_TOKEN ]
+    commands:
+      - > curl -X POST --header 'Content-Type: application/json'
+        --header 'Accept: application/json'
+        --header 'Authorization: Bearer ${SEMAPHORE_TOKEN}'
+        -d '{ "docker_tag": "${DRONE_COMMIT_SHA}" }'
+        http://159.65.10.143:3000/api/project/1/environment/1 -v
+    when:
+      branch: master
