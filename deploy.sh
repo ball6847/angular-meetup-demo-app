@@ -27,7 +27,7 @@ curl -s -b /tmp/semaphore-cookie -X POST \
   -d "${BODY}" \
   ${SEMAPHORE_URL}/api/auth/login 2>&1
 
-TOKEN=`curl -s -b /tmp/semaphore-cookie ${SEMAPHORE_URL}/api/user/tokens 2>&1 | grep -Po "(?<=id\":\")[^\"]+(?=\")"`
+TOKEN=`curl -vs -b /tmp/semaphore-cookie ${SEMAPHORE_URL}/api/user/tokens 2>&1 | grep -Po "(?<=id\":\")[^\"]+(?=\")"`
 
 echo "TOKEN=$TOKEN"
 
