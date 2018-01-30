@@ -1,26 +1,47 @@
 #!/bin/bash
 
-SEMAPHORE_URL=http://159.65.10.143:3000
+# ------------------------
+# ENV: YOU HAVE TO INJECT THESE VARIABLES THROUGH DRONE SECRETS
+
+# SEMAPHORE_URL
+# SEMAPHORE_USERNAME
+# SEMAPHORE_PASSWORD
+
+# -----------------------------------
+# login to get cookie
+
+read -r -d '' BODY <<- EOM
+  {
+    "auth": "${SEMAPHORE_USERNAME}",
+    "password": "${SEMAPHORE_PASSWORD}"
+  }
+EOM
+
+curl -s -b /tmp/semaphore-cookie -X POST \
+  --header 'Content-Type: application/json' \
+  --header 'Accept: application/json' \
+  -d "${BODY}" \
+  ${SEMAPHORE_URL}/api/auth/login 2>&1
 
 # -----------------------------------
 # update docker tag in semaphore
 
 read -r -d '' BODY <<- EOM
-    {
-      "id": 1,
-      "name": "deployment",
-      "project_id": 1,
-      "password": null,
-      "json": "{ \"docker_tag\": \"${DRONE_COMMIT_SHA}\"  }",
-      "removed": false
-    }
+  {
+    "id": 1,
+    "name": "deployment",
+    "project_id": 1,
+    "password": null,
+    "json": "{ \"docker_tag\": \"${DRONE_COMMIT_SHA}\"  }",
+    "removed": false
+  }
 EOM
 
-curl -X PUT --header 'Content-Type: application/json' \
+curl -s -b /tmp/semaphore-cookie -X PUT \
+  --header 'Content-Type: application/json' \
   --header 'Accept: application/json' \
-  --header "Authorization: Bearer ${SEMAPHORE_TOKEN}" \
   -d "${BODY}" \
-  ${SEMAPHORE_URL}/api/project/1/environment/1 -v
+  ${SEMAPHORE_URL}/api/project/1/environment/1
 
 # ---------------------------------------
 # enqueue tasks
@@ -31,10 +52,8 @@ read -r -d '' BODY <<- EOM
   }
 EOM
 
-curl -X POST --header 'Content-Type: application/json' \
+curl -s -b /tmp/semaphore-cookie -X POST \
+  --header 'Content-Type: application/json' \
   --header 'Accept: application/json' \
-  --header "Authorization: Bearer ${SEMAPHORE_TOKEN}" \
   -d "${BODY}" \
-  ${SEMAPHORE_URL}/api/project/1/tasks -v
-
-# trigger build
+  ${SEMAPHORE_URL}/api/project/1/tasks
