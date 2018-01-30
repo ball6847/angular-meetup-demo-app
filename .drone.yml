@@ -35,12 +35,9 @@ pipeline:
     image: plugins/docker
     secrets: [ DOCKER_USERNAME, DOCKER_PASSWORD ]
     repo: ball6847/angular-meetup-demo-app
-    docker:
-      registry: http://159.65.10.143:5000/v1/
-    tags:
-      auto: true
-    daemon:
-      insecure: true
+    registry: 159.65.10.143:5000
+    auto_tag: true
+    insecure: true
     when:
       branch: master
 
