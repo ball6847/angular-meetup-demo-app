@@ -1,0 +1,45 @@
+pipeline:
+  # start cache
+  restore:
+    image: drillster/drone-volume-cache
+    restore: true
+    mount:
+      - .cache
+      - node_modules
+    volumes:
+      - /tmp/cache:/cache
+
+  npm:
+    image: trion/ng-cli-karma:1.6.6
+    commands:
+      - yarn install --cache-folder ./.cache
+      - npx ng lint
+      - npx ng test --progress=false --single-run=true --watch=false
+      - npx ng build --prod --progress=false --sourcemaps=false
+
+  # save cache
+  rebuild:
+    image: drillster/drone-volume-cache
+    rebuild: true
+    mount:
+      - .cache
+      - node_modules
+    volumes:
+      - /tmp/cache:/cache
+
+  build:
+    image: trion/ng-cli-karma:1.6.6
+    commands:
+      - npx ng lint
+      - npx ng test --progress=false --single-run=true --watch=false
+      - npx ng build --prod --progress=false --sourcemaps=false
+
+  publish:
+    image: plugins/docker
+    secrets: [ docker_username, docker_password ]
+    repo: ball6847/angular-meetup-demo-app
+    registry: 159.65.10.143:5000
+    tags: [ ${DRONE_COMMIT_SHA:0:8}, latest ]
+    when:
+      branch: master
+
