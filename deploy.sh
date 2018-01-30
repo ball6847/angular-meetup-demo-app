@@ -17,11 +17,13 @@ read -r -d '' BODY <<- EOM
   }
 EOM
 
-curl -v -b /tmp/semaphore-cookie -X POST \
+curl -s -b /tmp/semaphore-cookie -X POST \
   --header 'Content-Type: application/json' \
   --header 'Accept: application/json' \
   -d "${BODY}" \
   ${SEMAPHORE_URL}/api/auth/login 2>&1
+
+TOKEN=`curl -s -b /tmp/semaphore-cookie ${SEMAPHORE_URL}/api/user/tokens 2>&1 | grep -Po "(?<=id\":\")[^\"]+(?=\")"`
 
 # -----------------------------------
 # update docker tag in semaphore
@@ -37,9 +39,10 @@ read -r -d '' BODY <<- EOM
   }
 EOM
 
-curl -v -b /tmp/semaphore-cookie -X PUT \
+curl -vs -X PUT \
   --header 'Content-Type: application/json' \
   --header 'Accept: application/json' \
+  --header "Authorization: Bearer ${TOKEN}" \
   -d "${BODY}" \
   ${SEMAPHORE_URL}/api/project/1/environment/1 2>&1
 
@@ -52,8 +55,9 @@ read -r -d '' BODY <<- EOM
   }
 EOM
 
-curl -v -b /tmp/semaphore-cookie -X POST \
+curl -vs -X POST \
   --header 'Content-Type: application/json' \
   --header 'Accept: application/json' \
+  --header "Authorization: Bearer ${TOKEN}" \
   -d "${BODY}" \
   ${SEMAPHORE_URL}/api/project/1/tasks 2>&1
