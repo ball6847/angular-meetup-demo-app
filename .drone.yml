@@ -8,6 +8,12 @@ pipeline:
       - node_modules
     volumes:
       - /tmp/cache:/cache
+
+  npm:
+    image: trion/ng-cli-karma:1.6.6
+    commands:
+      - yarn install --cache-folder ./.cache
+
   # save cache
   rebuild:
     image: drillster/drone-volume-cache
@@ -21,7 +27,6 @@ pipeline:
   build:
     image: trion/ng-cli-karma:1.6.6
     commands:
-      - yarn install --cache-folder ./.cache
       - npx ng lint
       - npx ng test --progress=false --single-run=true --watch=false
       - npx ng build --prod --progress=false --sourcemaps=false
@@ -31,7 +36,7 @@ pipeline:
     secrets: [ DOCKER_USERNAME, DOCKER_PASSWORD ]
     repo: ball6847/angular-meetup-demo-app
     docker:
-      registry: http://159.65.10.143:5000/v2/
+      registry: http://159.65.10.143:5000/v1/
     tags:
       auto: true
     daemon:
