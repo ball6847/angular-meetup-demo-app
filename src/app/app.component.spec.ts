@@ -36,7 +36,7 @@ describe('AppComponent', () => {
 
   it('should display "Todos" in h1 tag', async(() => {
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Todos');
+    expect(compiled.querySelector('h1').textContent).toContain('Angular');
   }));
 
   it('should add a todo', async(() => {
