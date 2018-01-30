@@ -36,7 +36,9 @@ pipeline:
     secrets: [ DOCKER_USERNAME, DOCKER_PASSWORD ]
     repo: 159.65.10.143:5000/ball6847/angular-meetup-demo-app
     registry: 159.65.10.143:5000
-    tags: [ ${DRONE_COMMIT_SHA}, latest ]
+    tags:
+      - latest
+      - ${DRONE_COMMIT_SHA}
     insecure: true
     when:
       branch: master
