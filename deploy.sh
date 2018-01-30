@@ -29,6 +29,8 @@ curl -s -b /tmp/semaphore-cookie -X POST \
 
 TOKEN=`curl -s -b /tmp/semaphore-cookie ${SEMAPHORE_URL}/api/user/tokens 2>&1 | grep -Po "(?<=id\":\")[^\"]+(?=\")"`
 
+echo "TOKEN=$TOKEN"
+
 # -----------------------------------
 # update docker tag in semaphore
 
