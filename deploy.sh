@@ -36,3 +36,5 @@ curl -X POST --header 'Content-Type: application/json' \
   --header "Authorization: Bearer ${SEMAPHORE_TOKEN}" \
   -d "${BODY}" \
   ${SEMAPHORE_URL}/api/project/1/tasks -v
+
+# trigger build
