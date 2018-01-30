@@ -17,7 +17,7 @@ read -r -d '' BODY <<- EOM
   }
 EOM
 
-curl -s -b /tmp/semaphore-cookie -X POST \
+curl -v -b /tmp/semaphore-cookie -X POST \
   --header 'Content-Type: application/json' \
   --header 'Accept: application/json' \
   -d "${BODY}" \
@@ -37,11 +37,11 @@ read -r -d '' BODY <<- EOM
   }
 EOM
 
-curl -s -b /tmp/semaphore-cookie -X PUT \
+curl -v -b /tmp/semaphore-cookie -X PUT \
   --header 'Content-Type: application/json' \
   --header 'Accept: application/json' \
   -d "${BODY}" \
-  ${SEMAPHORE_URL}/api/project/1/environment/1
+  ${SEMAPHORE_URL}/api/project/1/environment/1 2>&1
 
 # ---------------------------------------
 # enqueue tasks
@@ -52,8 +52,8 @@ read -r -d '' BODY <<- EOM
   }
 EOM
 
-curl -s -b /tmp/semaphore-cookie -X POST \
+curl -v -b /tmp/semaphore-cookie -X POST \
   --header 'Content-Type: application/json' \
   --header 'Accept: application/json' \
   -d "${BODY}" \
-  ${SEMAPHORE_URL}/api/project/1/tasks
+  ${SEMAPHORE_URL}/api/project/1/tasks 2>&1
