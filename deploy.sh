@@ -21,7 +21,10 @@ read -r -d '' BODY <<- EOM
   }
 EOM
 
-curl -s -b /tmp/semaphore-cookie -X POST \
+echo 'BODY='
+echo $BODY
+
+curl -v -b /tmp/semaphore-cookie -X POST \
   --header 'Content-Type: application/json' \
   --header 'Accept: application/json' \
   -d "${BODY}" \
@@ -29,7 +32,7 @@ curl -s -b /tmp/semaphore-cookie -X POST \
 
 OUTPUT=`curl -vs -b /tmp/semaphore-cookie ${SEMAPHORE_URL}/api/user/tokens 2>&1`
 
-echo "$OUTPUT"
+echo "OUTPUT=$OUTPUT"
 
 echo "$OUTPUT" | grep -Po "(?<=id\":\")[^\"]+(?=\")"
 
