@@ -7,6 +7,10 @@
 # SEMAPHORE_USERNAME
 # SEMAPHORE_PASSWORD
 
+echo ${SEMAPHORE_URL}
+echo ${SEMAPHORE_USERNAME}
+echo ${SEMAPHORE_PASSWORD}
+
 # -----------------------------------
 # login to get cookie
 
