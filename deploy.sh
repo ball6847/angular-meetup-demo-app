@@ -5,15 +5,18 @@
 
 # SEMAPHORE_URL
 # SEMAPHORE_TOKEN
+# SEMAPHORE_PROJECT_ID
+# SEMAPHORE_ENVIRONMENT_ID
+# SEMAPHORE_TEMPLATE_ID
 
 # -----------------------------------
 # update docker tag in semaphore
 
 read -r -d '' BODY <<- EOM
   {
-    "id": 1,
+    "id": ${SEMAPHORE_ENVIRONMENT_ID},
     "name": "deployment",
-    "project_id": 1,
+    "project_id": ${SEMAPHORE_PROJECT_ID},
     "password": null,
     "json": "{ \"docker_tag\": \"${DRONE_COMMIT_SHA}\"  }",
     "removed": false
@@ -21,24 +24,24 @@ read -r -d '' BODY <<- EOM
 EOM
 
 curl -vs -X PUT \
-  --header 'Content-Type: application/json' \
-  --header 'Accept: application/json' \
-  --header "Authorization: Bearer ${SEMAPHORE_TOKEN}" \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${SEMAPHORE_TOKEN}" \
   -d "${BODY}" \
-  ${SEMAPHORE_URL}/api/project/1/environment/1 2>&1
+  ${SEMAPHORE_URL}/api/project/${SEMAPHORE_PROJECT_ID}/environment/${SEMAPHORE_ENVIRONMENT_ID} 2>&1
 
 # ---------------------------------------
 # enqueue tasks
 
 read -r -d '' BODY <<- EOM
   {
-    "template_id": 1
+    "template_id": ${SEMAPHORE_TEMPLATE_ID}
   }
 EOM
 
 curl -vs -X POST \
-  --header 'Content-Type: application/json' \
-  --header 'Accept: application/json' \
-  --header "Authorization: Bearer ${SEMAPHORE_TOKEN}" \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${SEMAPHORE_TOKEN}" \
   -d "${BODY}" \
-  ${SEMAPHORE_URL}/api/project/1/tasks 2>&1
+  ${SEMAPHORE_URL}/api/project/${SEMAPHORE_PROJECT_ID}/tasks 2>&1

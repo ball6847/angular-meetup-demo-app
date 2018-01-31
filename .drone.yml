@@ -43,10 +43,17 @@ pipeline:
     when:
       branch: master
 
+  # delegate deployment to semaphore
   deploy:
     image: trion/ng-cli-karma:1.6.6
-    secrets: [ SEMAPHORE_URL, SEMAPHORE_TOKEN ]
+    secrets:
+      - SEMAPHORE_URL
+      - SEMAPHORE_TOKEN
+      - SEMAPHORE_PROJECT_ID
+      - SEMAPHORE_ENVIRONMENT_ID
+      - SEMAPHORE_TEMPLATE_ID
     commands:
+      # simply just wrapping many curl commands into one bash script
       - ./deploy.sh
     when:
       branch: master
